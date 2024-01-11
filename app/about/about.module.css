@@ -1,0 +1,16 @@
+.firstSec h1 {
+  font-family: cursive;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 4rem;
+  line-height: 68px;
+  color: #000000;
+}
+
+.firstSec p {
+  font-family: var(--font-oswald);
+  font-weight: 700;
+  line-height: 36px;
+  color: #000000;
+  font-size: 1.5rem;
+}

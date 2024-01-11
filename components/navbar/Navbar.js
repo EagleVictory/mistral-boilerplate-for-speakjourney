@@ -6,15 +6,15 @@ import Image from "next/image";
 import Logo from "../../assets/images/speack.png";
 import { signOut } from "next-auth/react";
 
-export default async function Navbar() {
+export default function Navbar() {
   return (
     <>
       <nav
-        className="navbar navbar-expand-lg "
-        style={{ background: "none !important" }}
+        className="navbar navbar-expand-lg"
+        style={{ backgroundColor: "#FDF0E6" }}
       >
         <div className="container-fluid">
-          <a className="navbar-brand mx-auto" href="#">
+          <a className="navbar-brand" href="#">
             <span>
               <Image src={Logo} alt="Picture of the author"></Image>
             </span>
@@ -33,7 +33,7 @@ export default async function Navbar() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ms-auto  mb-lg-0">
               {/* <logoutBtn /> */}
-              <button onClick={() => signOut()}>logout</button>
+              {/* <button onClick={() => signOut()}>logout</button> */}
               <li className="nav-item">
                 <Link
                   className="nav-link active"

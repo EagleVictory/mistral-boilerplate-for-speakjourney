@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // import { useChat } from 'ai/react';
 
 export default function Home() {
-  const dummyResponseComplettion = () => {
+  const dummyResponseComplettion = async () => {
     return "test";
   };
 
@@ -20,6 +20,7 @@ export default function Home() {
       setNewMessage("");
     }
   };
+
   const handleSubmit = (e) => {
     handleSendMessage();
     setMessages((prevState) => {
