@@ -1,8 +1,9 @@
-import { useRouter } from 'next/router'
+import { NextResponse } from "next/server";
 
 export async function POST({ params }) {
-  const router = useRouter()
-  console.log('DYNAMIC ROUTE' params.id);
+  console.log("api called");
+  // console.log("DYNAMIC ROUTE", params.id);
+
   const response = await fetch(
     "https://api.replicate.com/v1/predictions/" + params.id,
     {

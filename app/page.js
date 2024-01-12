@@ -8,10 +8,6 @@ export default function Home() {
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
 
-  const dummyResponseComplettion = () => {
-    return "test";
-  };
-
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
@@ -36,32 +32,28 @@ export default function Home() {
       }),
     });
     let prediction = await response.json();
-    console.log(prediction);
-    if (response.status !== 201) {
+    if (response.status !== 200) {
       setError(prediction.detail);
       return;
     }
-    setPrediction(prediction);
-    console.log('prediction', prediction);
 
-    const responseTwo = await fetch("/api/predictions/" + prediction.id);
-    console.log('response', responseTwo);
-    // while (
-    //   prediction.status !== "succeeded" &&
-    //   prediction.status !== "failed"
-    // ) {
-    //   await sleep(1000);
-    //   console.log('WHILE');
-    //   const response = await fetch("/api/predictions/" + prediction.id);
-    //   console.log('response', response);
-    //   prediction = await response.json();
-    //   if (response.status !== 200) {
-    //     setError(prediction.detail);
-    //     return;
-    //   }
-    //   console.log({ prediction });
-    //   setPrediction(prediction);
-    // }
+    setPrediction(prediction);
+
+    while (
+      prediction.status !== "succeeded" &&
+      prediction.status !== "failed"
+    ) {
+      await sleep(1000);
+      const response = await fetch("/api/predictions/" + prediction.id);
+      console.log("response", response);
+      prediction = await response.json();
+      if (response.status !== 200) {
+        setError(prediction.detail);
+        return;
+      }
+      // console.log({ prediction });
+      setPrediction(prediction);
+    }
   };
 
   return (
