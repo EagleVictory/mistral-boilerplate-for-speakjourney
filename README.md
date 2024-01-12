@@ -8,7 +8,7 @@ Install dependencies:
 npm install
 ```
 
-Add your [Replicate API token](https://replicate.com/account#token) to `.env.local`:
+Add your [Replicate API token](https://replicate.com/account#token) to `.env`:
 
 ```
 REPLICATE_API_TOKEN=<your-token-here>
