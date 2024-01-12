@@ -1,7 +1,6 @@
 import about1 from "../../assets/images/about.png";
 import Image from "next/image";
 import classes from "./about.module.css";
-
 export default function About() {
   return (
     <div className="conatiner-fluid" style={{ backgroundColor: "#FDF0E6" }}>
