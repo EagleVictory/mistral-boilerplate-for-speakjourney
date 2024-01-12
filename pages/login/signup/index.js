@@ -5,7 +5,7 @@ import useInput from "../../../hooks/use-inputs";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function SignUpPage() {
   const [isLoading, setisLoading] = useState(false);
   const router = useRouter();
   const {

@@ -17,6 +17,7 @@ export default function Navbar() {
       toast.success("You have been logged out");
     }
   };
+
   return (
     <nav className={`navbar navbar-expand-lg bg-white ${classes.navbar1}`}>
       <div className="container-fluid mx-5 d-flex justify-content-between">
@@ -25,7 +26,7 @@ export default function Navbar() {
           className="d-flex align-items-center"
           style={{ cursor: "pointer" }}
         >
-          <Image className="img-fluid logo" src={Logo} alt="" />
+          <Image className="img-fluid logo" src={Logo} alt="Navbar Image" />
         </Link>
 
         <div className={classes.nav1}>
