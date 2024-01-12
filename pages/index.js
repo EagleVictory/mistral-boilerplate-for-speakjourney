@@ -21,45 +21,50 @@ export default function Home() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setsending(true);
-    handleSendMessage();
+    try {
+      e.preventDefault();
+      setsending(true);
+      handleSendMessage();
 
-    const response = await fetch("/api/predictions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: newMessage,
-      }),
-    });
-    let prediction = await response.json();
-    if (response.status !== 200) {
-      setError(prediction.detail);
-      return;
-    }
-
-    setMessages((prevState) => {
-      return [...prevState, { text: prediction, user: "AI" }];
-    });
-
-    setsending(false);
-    while (
-      prediction.status !== "succeeded" &&
-      prediction.status !== "failed"
-    ) {
-      await sleep(1000);
-      const response = await fetch("/api/predictions/" + prediction.id);
-      prediction = await response.json();
-
+      const response = await fetch("/api/predictions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: newMessage,
+        }),
+      });
+      console.log(response);
+      let prediction = await response.json();
       if (response.status !== 200) {
         setError(prediction.detail);
         return;
       }
+
       setMessages((prevState) => {
         return [...prevState, { text: prediction, user: "AI" }];
       });
+
+      setsending(false);
+      while (
+        prediction.status !== "succeeded" &&
+        prediction.status !== "failed"
+      ) {
+        await sleep(1000);
+        const response = await fetch("/api/predictions/" + prediction.id);
+        prediction = await response.json();
+
+        if (response.status !== 200) {
+          setError(prediction.detail);
+          return;
+        }
+        setMessages((prevState) => {
+          return [...prevState, { text: prediction, user: "AI" }];
+        });
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -86,14 +91,14 @@ export default function Home() {
             ))}
           </div>
           <div className="ChatInput">
-            <form>
+            <div>
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
               />
-            </form>
+            </div>
             <button
               disabled={sending}
               style={{
