@@ -1,4 +1,4 @@
-import about1 from "../../assets/images/about1.png";
+import about1 from "../../assets/images/about.png";
 import Image from "next/image";
 import classes from "./about.module.css";
 
