@@ -1,13 +1,14 @@
-"use client";
-import { useState } from "react";
-import classes from "./Signup.module.css";
+import React, { useState } from "react";
+import classes from "./signup/signup.module.css";
 import Link from "next/link";
-import useInput from "@/hooks/use-inputs";
+import useInput from "../../hooks/use-inputs";
+import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-export default function page() {
-  const [isLoading, setisLoading] = useState(false);
+
+export default function Login() {
   const router = useRouter();
+  const [loading, setloading] = useState(false);
   const {
     enteredValue: enteredEmail,
     isValid: emailIsValid,
@@ -16,15 +17,6 @@ export default function page() {
     hasError: emailInputIsValid,
     reset: emailReset,
   } = useInput((value) => value.includes("@"));
-
-  const {
-    enteredValue: enteredName,
-    isValid: nameIsValid,
-    inputChangeHandler: nameChangeHandler,
-    onBlurHandler: nameBlurHanlder,
-    hasError: nameInputIsValid,
-    reset: resetName,
-  } = useInput((value) => value.trim() !== "");
 
   const {
     enteredValue: enteredPassword,
@@ -36,74 +28,44 @@ export default function page() {
   } = useInput((value) => value.length >= 7);
 
   let formIsValid = false;
-  if (nameIsValid && passwordIsValid && emailIsValid) {
+  if (passwordIsValid && emailIsValid) {
     formIsValid = true;
   }
-  //! Submitting form
-  const formSubmitHandler = async (e) => {
+
+  //! Login submit Handler
+
+  const loginHandler = async (e) => {
     e.preventDefault();
+
+    const credentials = {
+      email: enteredEmail,
+      password: enteredPassword,
+    };
+
     try {
-      setisLoading(true);
-
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      let raw = JSON.stringify({
-        email: enteredEmail,
-        name: enteredName,
-        password: enteredPassword,
+      setloading(true);
+      const result = await signIn("credentials", {
+        redirect: false,
+        ...credentials,
       });
 
-      let requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-      const res = await fetch(
-        "http://localhost:3000/api/users",
-        requestOptions
-      );
-      const successMess = await res.json();
-
-      if (!res.ok) {
-        throw new Error(successMess.message);
+      if (result.error) {
+        throw new Error("Login failed please check your email and password");
+      } else {
+        router.push("/");
+        toast.success("Login successful");
       }
-      emailReset();
-      resetName();
-      resetPassword();
-      router.push("/login");
-      toast.success(successMess.message);
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setisLoading(false);
+      setloading(false);
     }
   };
-
   return (
     <div className={classes.container}>
       <div className={classes["form_area"]}>
-        <p className={classes.title}>SIGN UP</p>
-        <form onSubmit={formSubmitHandler}>
-          <div className={classes["form_group"]}>
-            <label className={classes["sub_title"]} htmlFor="name">
-              Name
-            </label>
-            <input
-              value={enteredName}
-              onChange={(e) => nameChangeHandler(e.target.value)}
-              onBlur={nameBlurHanlder}
-              placeholder="Enter your full name"
-              className={classes["form_style"]}
-              type="text"
-            />
-            {nameInputIsValid && (
-              <p style={{ marginBottom: "0", color: "red", marginTop: "4px" }}>
-                Please enter correct Username
-              </p>
-            )}
-          </div>
+        <p className={classes.title}>LOG IN</p>
+        <form onSubmit={loginHandler}>
           <div className={classes["form_group"]}>
             <label className={classes["sub_title"]} htmlFor="email">
               Email
@@ -143,13 +105,17 @@ export default function page() {
             )}
           </div>
           <div>
-            <button disabled={!formIsValid} className={classes.btn}>
-              {isLoading ? "REGISTERING..." : "SIGN UP"}
+            <button
+              type="submit"
+              disabled={!formIsValid}
+              className={classes.btn}
+            >
+              {loading ? "LOGGING In..." : "LOG IN"}
             </button>
             <p>
-              Have an Account?
-              <Link className={classes.link} href="/login">
-                Login Here!
+              Don't have an Account?
+              <Link className={classes.link} href="/login/signup">
+                SignUp Here!
               </Link>
             </p>
           </div>

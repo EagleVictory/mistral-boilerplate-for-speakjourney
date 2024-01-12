@@ -1,11 +1,7 @@
-// import { getServerSession } from "next-auth";
-import about1 from "@/assets/images/about1.png";
+import about1 from "../../assets/images/about.png";
 import Image from "next/image";
 import classes from "./about.module.css";
-export default async function About() {
-  // const user = await getServerSession();
-  // console.log(user);
-
+export default function About() {
   return (
     <div className="conatiner-fluid" style={{ backgroundColor: "#FDF0E6" }}>
       <div className={`container pt-5 ${classes.firstSec}`}>

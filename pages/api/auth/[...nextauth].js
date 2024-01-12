@@ -1,5 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/config/prisma";
+import NextAuth from "next-auth/next";
+import { prisma } from "../../../config/prisma";
 
 export const options = {
   providers: [
@@ -36,3 +37,5 @@ export const options = {
     signIn: "/login",
   },
 };
+
+export default NextAuth(options);

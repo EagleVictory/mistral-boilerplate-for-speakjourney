@@ -1,72 +1,58 @@
-"use client";
 import React from "react";
 import Link from "next/link";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import Logo from "../../assets/images/speack.png";
 import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import classes from "./Navbar.module.css";
+import { toast } from "react-toastify";
 
-export default async function Navbar() {
+export default function Navbar() {
+  const { data: session, status, update } = useSession();
+
+  const logoutHandler = () => {
+    const ifLogout = confirm("Are you sure you want to logout?");
+    if (ifLogout) {
+      signOut();
+      toast.success("You have been logged out");
+    }
+  };
   return (
-    <>
-      <nav
-        className="navbar navbar-expand-lg "
-        style={{ background: "none !important" }}
-      >
-        <div className="container-fluid">
-          <a className="navbar-brand mx-auto" href="#">
-            <span>
-              <Image src={Logo} alt="Picture of the author"></Image>
-            </span>
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav ms-auto  mb-lg-0">
-              {/* <logoutBtn /> */}
-              <button onClick={() => signOut()}>logout</button>
-              <li className="nav-item">
-                <Link
-                  className="nav-link active"
-                  href="/"
-                  style={{ textDecoration: "none", color: "black" }}
-                >
-                  Home
-                </Link>
-              </li>
+    <nav className={`navbar navbar-expand-lg bg-white ${classes.navbar1}`}>
+      <div className="container-fluid mx-5 d-flex justify-content-between">
+        <Link
+          href="/"
+          className="d-flex align-items-center"
+          style={{ cursor: "pointer" }}
+        >
+          <Image className="img-fluid logo" src={Logo} alt="" />
+        </Link>
 
-              <li className="nav-item">
-                <Link
-                  className="nav-link active"
-                  href="/about"
-                  style={{ textDecoration: "none", color: "black" }}
-                >
-                  About
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link
-                  className="nav-link active"
-                  href="/login"
-                  style={{ textDecoration: "none", color: "black" }}
-                >
+        <div className={classes.nav1}>
+          <ul className="d-flex">
+            <li className="d-none d-sm-block mt-3">
+              <Link className="" href="/about">
+                About
+              </Link>
+              {status !== "authenticated" && (
+                <Link className="mx-sm-2 mx-md-5" href="/login">
                   Login
                 </Link>
-              </li>
-            </ul>
-          </div>
+              )}
+
+              {status === "authenticated" && (
+                <a
+                  className={`mx-sm-2 mx-md-5`}
+                  style={{ cursor: "pointer" }}
+                  onClick={logoutHandler}
+                >
+                  Logout
+                </a>
+              )}
+            </li>
+          </ul>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }

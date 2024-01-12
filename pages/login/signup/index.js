@@ -1,14 +1,13 @@
-"use client";
-import React, { useState } from "react";
-import classes from "./signup/Signup.module.css";
+import { useState } from "react";
+import classes from "./signup.module.css";
 import Link from "next/link";
-import useInput from "@/hooks/use-inputs";
-import { signIn } from "next-auth/react";
+import useInput from "../../../hooks/use-inputs";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-export default function Login() {
+
+export default function page() {
+  const [isLoading, setisLoading] = useState(false);
   const router = useRouter();
-  const [loading, setloading] = useState(false);
   const {
     enteredValue: enteredEmail,
     isValid: emailIsValid,
@@ -17,6 +16,15 @@ export default function Login() {
     hasError: emailInputIsValid,
     reset: emailReset,
   } = useInput((value) => value.includes("@"));
+
+  const {
+    enteredValue: enteredName,
+    isValid: nameIsValid,
+    inputChangeHandler: nameChangeHandler,
+    onBlurHandler: nameBlurHanlder,
+    hasError: nameInputIsValid,
+    reset: resetName,
+  } = useInput((value) => value.trim() !== "");
 
   const {
     enteredValue: enteredPassword,
@@ -28,44 +36,73 @@ export default function Login() {
   } = useInput((value) => value.length >= 7);
 
   let formIsValid = false;
-  if (passwordIsValid && emailIsValid) {
+  if (nameIsValid && passwordIsValid && emailIsValid) {
     formIsValid = true;
   }
-
-  //! Login submit Handler
-
-  const loginHandler = async (e) => {
+  //! Submitting form
+  const formSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const credentials = {
-      email: enteredEmail,
-      password: enteredPassword,
-    };
-
     try {
-      setloading(true);
-      const result = await signIn("credentials", {
-        redirect: false,
-        ...credentials,
+      setisLoading(true);
+
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      let raw = JSON.stringify({
+        email: enteredEmail,
+        name: enteredName,
+        password: enteredPassword,
       });
 
-      if (result.error) {
-        throw new Error("Login failed please check your email and password");
-      } else {
-        router.push("/");
-        toast.success("Login successful");
+      let requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      const res = await fetch("/api/users", requestOptions);
+      const successMess = await res.json();
+
+      if (!res.ok) {
+        throw new Error(successMess.message);
       }
+      emailReset();
+      resetName();
+      resetPassword();
+      router.push("/login");
+      toast.success(successMess.message);
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setloading(false);
+      setisLoading(false);
     }
   };
+
   return (
     <div className={classes.container}>
       <div className={classes["form_area"]}>
-        <p className={classes.title}>LOG IN</p>
-        <form onSubmit={loginHandler}>
+        <p className={classes.title}>SIGN UP</p>
+        <form onSubmit={formSubmitHandler}>
+          <div className={classes["form_group"]}>
+            <label className={classes["sub_title"]} htmlFor="name">
+              Name
+            </label>
+            <input
+              value={enteredName}
+              onChange={(e) => nameChangeHandler(e.target.value)}
+              onBlur={nameBlurHanlder}
+              placeholder="Enter your full name"
+              className={classes["form_style"]}
+              type="text"
+            />
+            {nameInputIsValid && (
+              <p style={{ marginBottom: "0", color: "red", marginTop: "4px" }}>
+                Please enter correct Username
+              </p>
+            )}
+          </div>
           <div className={classes["form_group"]}>
             <label className={classes["sub_title"]} htmlFor="email">
               Email
@@ -105,17 +142,13 @@ export default function Login() {
             )}
           </div>
           <div>
-            <button
-              type="submit"
-              disabled={!formIsValid}
-              className={classes.btn}
-            >
-              {loading ? "LOGGING In..." : "LOG IN"}
+            <button disabled={!formIsValid} className={classes.btn}>
+              {isLoading ? "REGISTERING..." : "SIGN UP"}
             </button>
             <p>
-              Don't have an Account?
-              <Link className={classes.link} href="/login/signup">
-                SignUp Here!
+              Have an Account?
+              <Link className={classes.link} href="/login">
+                Login Here!
               </Link>
             </p>
           </div>

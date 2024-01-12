@@ -1,6 +1,21 @@
-/* Navbar.module.css */
-.navbar {
-    background-color: none;
-    /* Add any additional styles as needed */
-  }
-  
+.navbar1 {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav1 ul li a {
+  color: black;
+  text-decoration: none;
+  letter-spacing: 0.1rem;
+  font-family: "Raleway", sans-serif;
+  font-weight: 1000;
+  font-size: 1.2rem;
+  padding: 1rem 1rem;
+  border-bottom: 0.3rem solid #0056b3;
+}
+
+.nav1 ul li a:hover {
+  background-color: #0056b3;
+  transition: 0.3s ease-in;
+  color: white;
+}
