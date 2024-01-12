@@ -113,7 +113,7 @@ export default function Login() {
               {loading ? "LOGGING In..." : "LOG IN"}
             </button>
             <p>
-              Don&apos;t have an Account?
+              Dont have an Account?
               <Link className={classes.link} href="/login/signup">
                 SignUp Here!
               </Link>
